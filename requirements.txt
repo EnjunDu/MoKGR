@@ -1,0 +1,6 @@
+cupy==13.3.0
+numpy==2.2.1
+scipy==1.14.1
+torch==2.5.1
+torch_scatter==2.1.2
+tqdm==4.67.1
