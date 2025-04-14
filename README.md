@@ -1,8 +1,9 @@
 # MoKGR
 
 <p align="center">
-<img src="images/MoKGR.png" alt="MoKGR" />
+<img src="images/MoKGR.png" alt="MoKGR" , width= 40%/>
 </p>
+
 
 ## Dependencies
 
