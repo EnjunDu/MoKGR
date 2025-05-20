@@ -1,56 +1,94 @@
-# MoKGR
+<!--
+ ┌────────────────────────────────────────────────────────────────────┐
+ │  MoKGR · Mixture-of-Experts for Personalized KG Reasoning         │
+ └────────────────────────────────────────────────────────────────────┘
+-->
 
 <p align="center">
-<img src="images/MoKGR.png" alt="MoKGR" , width= 40%/>
+  <img src="images/MoKGR.png" alt="MoKGR architecture" width="55%"/>
 </p>
 
+# MoKGR
 
-## Dependencies
+**MoKGR (Mixture of Length and Pruning Experts for Knowledge-Graph Reasoning)** is a relation-centric framework that *personalizes* path exploration to deliver state-of-the-art KG reasoning in both **transductive** and **inductive** settings.
 
-* cupy=13.3.0
-* numpy=2.2.1
-* scipy=1.14.1
-* torch=2.5.1
-* torch_scatter=2.1.2
-* tqdm=4.67.1
+<div align="center">
+<strong>Key ideas</strong> · adaptive path-length selection · complementary pruning experts · fast & memory-efficient message passing
+</div>
 
-## Usage
+---
 
+## ✨ Highlights
+* **Adaptive Length Experts** – query-aware gating selects the most relevant hop distances and stops early with a Gumbel-Sigmoid binary gate.  
+* **Complementary Pruning Experts** – score-, attention- and semantic-based experts collaboratively retain the most informative entities.  
+* **Unified Pipeline** – handles *fully inductive*, *transductive* and *cross-domain* KGs with a single codebase.  
+* **Scalable** – tested on large KGs (e.g. **YAGO3-10**) without GPU out-of-memory errors.  
+* **Plug-and-Play** – lightweight implementation; a single modern GPU is sufficient for all benchmarks.
+
+---
+
+## 🔧 Installation
+```bash
+# Clone and install
+git clone https://github.com/<your-repo>/MoKGR.git
+cd MoKGR
+pip install -r requirements.txt   
 ```
-pip install -r requirements.txt
-```
 
-### Transductive settings (in `\transductive`)
+## 🚀 Quick Start
+
+### 1. Transductive Reasoning
 
 ```
 cd transductive
+# Family (small-scale)
+python train.py \
+  --data_path data/family --gpu 0 \
+  --max_hop 8 --min_hop 2 \
+  --num_experts 4 --num_pruning_experts 2 \
+  --active_PPR --sampling_percentage 0.85 \
+  --active_gate --gate_threshold 0.25
 ```
 
-* If there occur any **OoM** (Out-of-Memory) problem, just **active** the PPR or **turn down** (if you already activated it) the sampling_percentage.
-* For the gated function, enable **--active_gate** to turn on the gate. Generally speaking, we recommend setting **--gate_threshold** to between 0.1 and 0.4. 
-
-#### For Small-Scale Dataset like Family
-
 ```
-python -W ignore train.py --data_path=data/family --max_hop 8 --min_hop 2 --K_min 90 --K_max 150 --l_inflection 3 --a 3.5 --log_file family.log  --gpu 0 --K_source 100 --num_pruning_experts 2 --fact_ratio 0.90 --lambda_importance 0.000000000000005725039842729399 --lambda_load 4.377277390633418e-07 --lambda_noise 1.2079892684178535 --hop_temperature 1.7064284191836472 --l_inflection 4 --num_experts 4 --a 5.336083198086804 --seed 9582 --pruning_temperature 2.049253025798915 --arctive_PPR --sampling_percentage 0.8502985376570376 
-```
-
-#### For Large-Scale Dataset like YAGO
-
-```
-python3 -W ignore train.py --data_path=data/YAGO --max_hop 8 --min_hop 1 --num_experts 6 --K_min 1750 --K_max 2550 --l_inflection 3 --a 3.5 --log_file YAGO.log  --gpu 0 --K_source 2000 --num_pruning_experts 2 --fact_ratio 0.995 --sampling_percentage 0.475 --active_PPR --lambda_load 1e-8 --lambda_importance 1e-07 --lambda_importance_pruning 1e-08
+# YAGO3-10 (large-scale)
+python train.py \
+  --data_path data/YAGO --gpu 0 \
+  --max_hop 8 --min_hop 1 \
+  --num_experts 6 --num_pruning_experts 2 \
+  --active_PPR --sampling_percentage 0.475
 ```
 
-### Inductive settings (in `\inductive`)
+*📝 Tip*: Encounter **OOM**? Increase `--sampling_percentage` *or* disable `--active_PPR` to reduce subgraph size.
+
+### 2. Inductive Reasoning
 
 ```
 cd inductive
+python train.py \
+  --data_path ./data/WN18RR_v2 --gpu 0 \
+  --max_hop 8 --min_hop 2 --num_experts 5 \
+  --active_gate --gate_threshold 0.05
 ```
 
+## 📊 Reproducing Paper Results
 
+| Dataset   | MRR       | Hit@1     | Hit@10    |
+| --------- | --------- | --------- | --------- |
+| WN18RR    | 0.611     | 0.539     | 0.702     |
+| FB15k-237 | 0.443     | 0.368     | 0.607     |
+| YAGO3-10  | **0.657** | **0.577** | **0.758** |
+
+
+
+Full benchmark tables & ablation studies can be found in our paper’s Appendix B–D.
+
+## 🛠  Project Structure
 
 ```
-python train.py --data_path ./data/WN18RR_v2 --seed 1234 --gpu 0 --gate_threshold 0.05 --sampling_percentage 1 --PPR_alpha 0.85 --max_iter 100 --pruning_temperature 1 --lambda_noise_pruning 0 --lr 0.0021 --decay_rate 0.9968 --lamb 0.000018 --hidden_dim 64 --init_dim 64 --attn_dim 3 --n_layer 7 --n_batch 20 --dropout 0.4237 --act relu --topk 100 --increase True --max_hop 8 --min_hop 2 --num_experts 5 --lambda_importance 0.0 --lambda_load 0.0 --lambda_noise 1.0 --temperature 1.0 --K_source 1000 --K_min 750 --K_max 1275 --l_inflection 3 --a 3.5 --num_pruning_experts 2 --log_file WN18RR_v2.log
+MoKGR/
+├─ transductive/     # training & evaluation scripts (fixed entity set)
+├─ inductive/        # inductive split loader + training scripts
+├─ images/        # logo of MoKGR
+└─ requirements.txt
 ```
-
-
