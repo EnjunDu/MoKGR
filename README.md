@@ -26,8 +26,6 @@ pip install -r requirements.txt
 cd transductive
 ```
 
-
-
 * If there occur any **OoM** (Out-of-Memory) problem, just **active** the PPR or **turn down** (if you already activated it) the sampling_percentage.
 * For the gated function, enable **--active_gate** to turn on the gate. Generally speaking, we recommend setting **--gate_threshold** to between 0.1 and 0.4. 
 
@@ -54,6 +52,5 @@ cd inductive
 ```
 python train.py --data_path ./data/WN18RR_v2 --seed 1234 --gpu 0 --gate_threshold 0.05 --sampling_percentage 1 --PPR_alpha 0.85 --max_iter 100 --pruning_temperature 1 --lambda_noise_pruning 0 --lr 0.0021 --decay_rate 0.9968 --lamb 0.000018 --hidden_dim 64 --init_dim 64 --attn_dim 3 --n_layer 7 --n_batch 20 --dropout 0.4237 --act relu --topk 100 --increase True --max_hop 8 --min_hop 2 --num_experts 5 --lambda_importance 0.0 --lambda_load 0.0 --lambda_noise 1.0 --temperature 1.0 --K_source 1000 --K_min 750 --K_max 1275 --l_inflection 3 --a 3.5 --num_pruning_experts 2 --log_file WN18RR_v2.log
 ```
-
 
 
