@@ -29,8 +29,6 @@
 
 ## 🔧 Installation
 ```bash
-# Clone and install
-git clone https://github.com/<your-repo>/MoKGR.git
 cd MoKGR
 pip install -r requirements.txt   
 ```
