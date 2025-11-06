@@ -90,3 +90,21 @@ MoKGR/
 ├─ images/        # logo of MoKGR
 └─ requirements.txt
 ```
+
+
+
+## Citation
+
+If you find our paper useful, please cite our paper:
+
+```
+@inproceedings{du2025mokgr,
+  title        = {Mixture of Length and Pruning Experts for Knowledge Graphs Reasoning},
+  author       = {Du, Enjun and Liu, Siyi and Zhang, Yongqi},
+  booktitle    = {Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year         = {2025},
+  publisher    = {Association for Computational Linguistics},
+  url          = {https://aclanthology.org/2025.emnlp-main.23}
+}
+```
+
